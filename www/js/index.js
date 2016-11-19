@@ -1,12 +1,10 @@
 var app = {
-    initialize: function() {
+    initialize: function () {
         this.bindEvents();
     },
 
-    bindEvents: function() {
+    bindEvents: function () {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-
-
     },
 
     escreverArquivo: function (evt) {
@@ -19,8 +17,9 @@ var app = {
             fileEntry.file(function (file) {
                 var reader = new FileReader();
 
-                reader.onloadend = function() {
+                reader.onloadend = function () {
                     console.log("Successful file read: " + this.result);
+                    document.getElementById('texto').innerHTML = this.result;
                 };
 
                 reader.readAsText(file);
@@ -28,10 +27,10 @@ var app = {
             }, console.error);
         };
 
-        var escrever =  function writeFile(fileEntry, conteudo) {
+        var escrever = function writeFile(fileEntry, conteudo) {
             fileEntry.createWriter(function (fileWriter) {
 
-                fileWriter.onwriteend = function() {
+                fileWriter.onwriteend = function () {
                     console.log("Successful file write...");
                     ler(fileEntry);
                 };
@@ -41,19 +40,18 @@ var app = {
                 };
 
                 fileWriter.write(conteudo);
-            });
+            }, console.error);
         };
 
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
-            fileSystem.root.getFile('meuarquivo.txt', { create: true, exclusive: false }, function (fileEntry) {
+            fileSystem.root.getFile('meuarquivo.txt', {create: true, exclusive: false}, function (fileEntry) {
                 escrever(fileEntry, $input);
             }, console.error)
         }, console.error);
 
-        console.log($input);
     },
 
-    onDeviceReady: function() {
+    onDeviceReady: function () {
         document.getElementById('salvar_btn').addEventListener('click', app.escreverArquivo);
     }
 };
